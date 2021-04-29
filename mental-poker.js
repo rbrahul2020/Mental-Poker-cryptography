@@ -1,15 +1,14 @@
-// generate 52 card no.(all are quadratic residues)
 function gen_deck(){
-  
+
   let deck_no=[];
   for(let i=1;i<=52;i++){
-    deck_no.push((i+500)**2); 
+    deck_no.push((i+5)**2);
   }
   console.log(deck_no);
-  return deck_no; 
-} 
+  return deck_no;
+}
 
-// generate 52 card no. in ascii format (all are 4 digit first 2 digit represent house 
+// generate 52 card no. in ascii format (all are 4 digit first 2 digit represent house
 //and last 2 card number
 function gen_deck_by_ascii() {
     var houses = ["83", "67", "72", "68"]
@@ -43,17 +42,17 @@ function gen_deck_by_ascii() {
     return deck
 }
 
-// map residue card numbers to ascii card 4 digit number 
+// map residue card numbers to ascii card 4 digit number
 function mapping(deck){
     let deck_ascii= gen_deck_by_ascii();
     let Mappings={}
-    
+
     let l=deck.length;
-    
+
     for(let i=0;i<l;i++){
         Mappings[deck[i]]=deck_ascii[i];
     }
-    return(Mappings); 
+    return(Mappings);
 }
 
 // calculate (base power exponent)%modulas in O(log(exponent))
@@ -93,11 +92,11 @@ function dec_card(deck, priv_key) {
     return dec_deck
 }
 
-// Returns e and d for given p and q 
+// Returns e and d for given p and q
 function key_generator(p, q) {
     let n = p * q;
     let r = (p - 1) * (q - 1);
-    
+
     // return gcd of e and r
     function egcd(e, r) {
         while (r != 0) {
@@ -180,7 +179,7 @@ function read_card(card) {
 // let id=10
 // rand =0.567
 // swap id= 5.67 's floor i.e 5
-// swap 5 and 10 
+// swap 5 and 10
 function shuffle_deck(array) {
     var temporaryValue, randomIndex;
     var cnt = 1000;
@@ -192,7 +191,7 @@ function shuffle_deck(array) {
         // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * n);
         cnt -= 1;
-        // swapping between random index and n-1 
+        // swapping between random index and n-1
         // And swap it with the current element.
         temporaryValue = array[n - 1];
         array[n - 1] = array[randomIndex];
@@ -212,32 +211,101 @@ function hand_enc(deck) {
     return deck1;
 }
 
-function genPrime(m, n) {
+// function genPrime(m, n) {
+//
+//     if (isNaN(n) || !isFinite(n) || n % 1 || n < 2)
+//         return " Number not valid : " + n;
+//     let a = [];
+//     for (var i = m; i < n; i++) {
+//         if (isPrime(i)) {
+//             a.push(i);
+//         }
+//     }
+//     return a;
+// }
+//
+//
+// function isPrime(num) {
+//     for (var i = 2; i * i <= num; i++) {
+//         if (num % i === 0) {
+//             return false;
+//         }
+//     }
+//     return true;
+// }
+function pow(a,b,n)
+{
+a = a % n;
+  var result = 1;
+  var x = a;
 
-    if (isNaN(n) || !isFinite(n) || n % 1 || n < 2)
-        return " Number not valid : " + n;
-    let a = [];
-    for (var i = m; i < n; i++) {
-        if (isPrime(i)) {
-            a.push(i);
-        }
+  while(b > 0){
+    var leastSignificantBit = b % 2;
+    b = Math.floor(b / 2);
+
+    if (leastSignificantBit == 1) {
+      result = result * x;
+      result = result % n;
     }
-    return a;
+
+    x = x * x;
+    x = x % n;
+  }
+  return result;
 }
-
-
-function isPrime(num) {
-    for (var i = 2; i * i <= num; i++) {
-        if (num % i === 0) {
-            return false;
+function isprime(n)
+{
+let f=0;
+let d=n-1,s=0;
+    while(d)
+    {
+        if(d%2==0)
+        {
+            s++;
+            d/=2;
         }
+        else
+        break;
     }
-    return true;
-}
 
+let A=[2,3,5,7,11,13,17,19,23,29,31,37,41];
+var test=A.length;
+while(test--)
+{
+let a=A[test];
+if(powerMod(a,d,n)===1){f=1;break;}
+var p=d;
+for(i=0;i<s;i++)
+{
+if(powerMod(a,p,n)===(n-1)){f=1;break;}
+p=p*2;
+}
+}
+return f;
+}
+function randomNumberWithBitLength(l)
+{
+  let st=1;
+  for(i=0;i<l;i++)
+  {
+      st = st*2;
+  }
+  let x= st + Math.floor( Math.random() * st)
+  //console.log(x)
+  return(x);
+}
+function primeGen()
+{
+    while(true)
+    {
+    let v=randomNumberWithBitLength(9);
+    if(v%2==0)v+=1;
+    if(isprime(v))return v;
+    }
+}
 //deck is the 52 card no. all are quadratic residues
 var deck = gen_deck();
-// map residue card numbers to ascii card 4 digit number 
+// map residue card numbers to ascii card 4 digit number
 let Mappings= mapping(deck);
 
 
@@ -254,13 +322,31 @@ console.log(deck)
 
 console.log("Alice generates p and q and also sends them to bob")
 
-let a = genPrime(1000, 11000);
-
-a = shuffle_deck(a);
-p = a[0], q = a[1];
+// let a = genPrime();
+//
+// a = shuffle_deck(a);
+// p = a[0], q = a[1];
+function validprime(x)
+{
+  for(i=2;i*i<=x;i++)
+  {
+    if(x%i==0)return false;
+  }
+  return true;
+}
+let p;
+while(true)
+{
+  p=primeGen();
+  if(validprime(p))break;
+}
+let q;
+while(true)
+{
+q=primeGen();
+if(p!=q && validprime(q))break;
+}
 console.log(p); console.log(q);
-
-console.log(p, q);
 
 let [alice_pub, alice_priv] = key_generator(p, q)
 
