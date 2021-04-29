@@ -298,7 +298,7 @@ function primeGen()
 {
     while(true)
     {
-    let v=randomNumberWithBitLength(9);
+    let v=randomNumberWithBitLength(12);
     if(v%2==0)v+=1;
     if(isprime(v))return v;
     }
