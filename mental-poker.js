@@ -1,11 +1,11 @@
-function gen_deck(){
 
-  let deck_no=[];
-  for(let i=1;i<=52;i++){
-    deck_no.push((i+5)**2);
-  }
-  console.log(deck_no);
-  return deck_no;
+function gen_deck() {
+    let deck_no = [];
+    for (let i = 1; i <= 52; i++) {
+        deck_no.push((i + 5) ** 2);
+    }
+    console.log(deck_no);
+    return deck_no;
 }
 
 // generate 52 card no. in ascii format (all are 4 digit first 2 digit represent house
@@ -42,26 +42,26 @@ function gen_deck_by_ascii() {
     return deck
 }
 
-// map residue card numbers to ascii card 4 digit number
-function mapping(deck){
-    let deck_ascii= gen_deck_by_ascii();
-    let Mappings={}
+// map square card numbers to ascii card 4 digit number
+function mapping(deck) {
+    let deck_ascii = gen_deck_by_ascii();
+    let Mappings = {}
 
-    let l=deck.length;
+    let l = deck.length;
 
-    for(let i=0;i<l;i++){
-        Mappings[deck[i]]=deck_ascii[i];
+    for (let i = 0; i < l; i++) {
+        Mappings[deck[i]] = deck_ascii[i];
     }
-    return(Mappings);
+    return (Mappings);
 }
 
-// calculate (base power exponent)%modulas in O(log(exponent))
+// calculate (base raise to power exponent)%modulas in O(log(exponent))
 function powerMod(base, exponent, modulus) {
     if (modulus === 1) return 0;
     var result = 1;
     base = base % modulus;
     while (exponent > 0) {
-        if (exponent % 2 === 1)  //odd number
+        if ((exponent&1) === 1)  //odd number
             result = (result * base) % modulus;
         exponent = exponent >> 1; //divide by 2
         base = (base * base) % modulus;
@@ -71,7 +71,8 @@ function powerMod(base, exponent, modulus) {
 
 //SRA Algorithm code start here in which both key pair private and public remain secret
 //encrypt code
-function enc_card(deck, pub_key) {
+function enc_card(deck, pub_key) 
+{
     var enc_deck = []
     let [e, n] = [pub_key[0], pub_key[1]]
 
@@ -109,19 +110,18 @@ function key_generator(p, q) {
 
     // return one of integer pair satisfying ax+by=1
     // using extended euclid algorithm
-    function mult_inv(a, b) {
-
+    function mult_inv(a, b) 
+    {
         if (b == 0) { return ([1, 0]); }
         let [x1, y1] = mult_inv(b, a % b);
         let x = y1;
         let y = x1 - (parseInt(a / b)) * y1;
         return ([x, y]);
-
     }
 
     let e;
 
-    var arr = []
+    var arr = [];
 
     for (i = 2; i < 10000; i++) {
         if (egcd(i, r) == 1) {
@@ -129,7 +129,7 @@ function key_generator(p, q) {
         }
     }
     arr = shuffle_deck(arr);
-    e = arr[0]
+    e = arr[0];
 
 
     console.log("e is")
@@ -139,7 +139,6 @@ function key_generator(p, q) {
     // d*e =1 +r*y
     // d*e-r*y=1
     // e*x-r*y=1
-
     //eugcd(e, r);
     //console.log(e,r);
     // [d,y]
@@ -200,7 +199,8 @@ function shuffle_deck(array) {
     return array;
 }
 
-function hand_enc(deck) {
+function hand_enc(deck) 
+{
     deck = shuffle_deck(deck);
     let deck1 = [];
     var t = 5;
@@ -211,102 +211,54 @@ function hand_enc(deck) {
     return deck1;
 }
 
-// function genPrime(m, n) {
-//
-//     if (isNaN(n) || !isFinite(n) || n % 1 || n < 2)
-//         return " Number not valid : " + n;
-//     let a = [];
-//     for (var i = m; i < n; i++) {
-//         if (isPrime(i)) {
-//             a.push(i);
-//         }
-//     }
-//     return a;
-// }
-//
-//
-// function isPrime(num) {
-//     for (var i = 2; i * i <= num; i++) {
-//         if (num % i === 0) {
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-function pow(a,b,n)
-{
-a = a % n;
-  var result = 1;
-  var x = a;
 
-  while(b > 0){
-    var leastSignificantBit = b % 2;
-    b = Math.floor(b / 2);
-
-    if (leastSignificantBit == 1) {
-      result = result * x;
-      result = result % n;
-    }
-
-    x = x * x;
-    x = x % n;
-  }
-  return result;
-}
-function isprime(n)
-{
-let f=0;
-let d=n-1,s=0;
-    while(d)
-    {
-        if(d%2==0)
-        {
+function isprime(n) {
+    let f = 0;
+    let d = n - 1, s = 0;
+    while (d) {
+        if (d % 2 == 0) {
             s++;
-            d/=2;
+            d /= 2;
         }
         else
-        break;
+            break;
     }
 
-let A=[2,3,5,7,11,13,17,19,23,29,31,37,41];
-var test=A.length;
-while(test--)
-{
-let a=A[test];
-if(powerMod(a,d,n)===1){f=1;break;}
-var p=d;
-for(i=0;i<s;i++)
-{
-if(powerMod(a,p,n)===(n-1)){f=1;break;}
-p=p*2;
+    let A = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41];
+    var test = A.length;
+    while (test--) {
+        let a = A[test];
+        if (powerMod(a, d, n) === 1) { f = 1; break; }
+        var p = d;
+        for (i = 0; i < s; i++) {
+            if (powerMod(a, p, n) === (n - 1)) { f = 1; break; }
+            p = p * 2;
+        }
+    }
+    return f;
 }
+
+function randomNumberWithBitLength(l) {
+    let st = 1;
+    for (i = 0; i < (l-1); i++) {
+        st = st * 2;
+    }
+    let x = st + Math.floor(Math.random() * st)
+    //console.log(x)
+    return (x);
 }
-return f;
-}
-function randomNumberWithBitLength(l)
-{
-  let st=1;
-  for(i=0;i<l;i++)
-  {
-      st = st*2;
-  }
-  let x= st + Math.floor( Math.random() * st)
-  //console.log(x)
-  return(x);
-}
-function primeGen()
-{
-    while(true)
-    {
-    let v=randomNumberWithBitLength(12);
-    if(v%2==0)v+=1;
-    if(isprime(v))return v;
+
+function primeGen() {
+    while (true) {
+        let v = randomNumberWithBitLength(12);
+        if (v % 2 == 0) v += 1;
+        if (isprime(v)) return v;
     }
 }
-//deck is the 52 card no. all are quadratic residues
+//deck is the 52 card no. all are squared number
 var deck = gen_deck();
-// map residue card numbers to ascii card 4 digit number
-let Mappings= mapping(deck);
+// map squared card numbers to ascii card 4 digit number
+let Mappings = mapping(deck);
 
 
 var cards = []
@@ -322,29 +274,22 @@ console.log(deck)
 
 console.log("Alice generates p and q and also sends them to bob")
 
-// let a = genPrime();
-//
-// a = shuffle_deck(a);
-// p = a[0], q = a[1];
-function validprime(x)
-{
-  for(i=2;i*i<=x;i++)
-  {
-    if(x%i==0)return false;
-  }
-  return true;
+function validprime(x) {
+    for (i = 2; i * i <= x; i++) {
+        if (x % i == 0) return false;
+    }
+    return true;
 }
 let p;
-while(true)
-{
-  p=primeGen();
-  if(validprime(p))break;
+while (true) {
+    p = primeGen();
+    if (validprime(p)) break;
 }
+
 let q;
-while(true)
-{
-q=primeGen();
-if(p!=q && validprime(q))break;
+while (true) {
+    q = primeGen();
+    if (p != q && validprime(q)) break;
 }
 console.log(p); console.log(q);
 
@@ -415,8 +360,8 @@ let aliceContent = "";
 
 for (i = 0; i < alice_cards.length; i++) {
     aliceContent += `<div class="card card-front">
-                    <img src="./images/${alice_cards[i]}.jpg" alt="card" height="200" width="120">
-    </div>`;
+                      <img src="./images/${alice_cards[i]}.jpg" alt="card" height="200" width="120">
+      </div>`;
 }
 
 
@@ -429,8 +374,8 @@ let bobContent = "";
 
 for (i = 0; i < alice_cards.length; i++) {
     bobContent += `<div class="card card-front">
-                    <img src="./images/${bob_cards[i]}.jpg" alt="card" height="200" width="120">
-    </div>`;
+                      <img src="./images/${bob_cards[i]}.jpg" alt="card" height="200" width="120">
+      </div>`;
 }
 
 let BC = document.getElementsByClassName("Bob-Cards")[0];
